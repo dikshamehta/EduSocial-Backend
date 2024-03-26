@@ -196,3 +196,24 @@ export const declineFriendRequest = async (req, res) => {
         res.status(404).json({ error: err });
     }
 }
+
+export const changeSettings = async (req, res) => {
+    try {
+        const { id } = req.params; //Grab id
+        const user = await User.findById(id); //Get user by id
+        console.log(user);
+        console.log(req.body);
+
+        const { emailPrivacy, profilePrivacy } = req.body; //Grab profilePrivacy and emailPrivacy
+        console.log("Profile Privacy: " + profilePrivacy);
+        console.log("Email Privacy: " + emailPrivacy);
+        user.profilePrivacy = profilePrivacy; //Update profilePrivacy
+        user.emailPrivacy = emailPrivacy; //Update emailPrivacy
+
+        await user.save(); //Save user information
+
+        res.status(200).json(user); //Return user, sends back to front end
+    } catch (err) {
+        res.status(404).json({ error: err });
+    }
+}

@@ -68,6 +68,17 @@ export const createPost = async (req, res) => {
 export const getFeedPosts = async (req, res) => {
     try {
         const posts = await Post.find(); //Get all posts
+
+        //Delete all posts for users that are private using profilePrivacy = 1
+        for (let i = 0; i < posts.length; i++) {
+            const user = await User.findById(posts[i].userId);
+            if (user.profilePrivacy === true) {
+                posts.splice(i, 1);
+                i--;
+            }
+        }
+
+
         res.status(200).json(posts); //Return all posts, sends back to front end
     } catch (err) {
         res.status(404).json({ message: err.message });

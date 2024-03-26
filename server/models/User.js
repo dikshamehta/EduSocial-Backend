@@ -54,12 +54,12 @@ const userSchema = new mongoose.Schema(
             default: 0,
         },
         profilePrivacy: {
-            type: Number,
-            default: 0,
+            type: Boolean,
+            default: false,
         },
         emailPrivacy: {
-            type: Number,
-            default: 0,
+            type: Boolean,
+            default: false,
         },
         displayTag: {
             type: Number,

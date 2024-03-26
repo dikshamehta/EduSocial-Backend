@@ -58,6 +58,10 @@ const postSchema = mongoose.Schema(
             type: [commentSchema],
             default: [],
         },
+        displayTag: {
+            type: Number,
+            default: 0,
+        }
     },
     { timestamps: true }
 );

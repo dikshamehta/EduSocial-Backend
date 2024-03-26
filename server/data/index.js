@@ -164,6 +164,7 @@ export const posts = [
       [userIds[2], "another random comment"],
       [userIds[3], "no more random comments"],
     ],
+    displayTag: 0,
   },
   {
     _id: new mongoose.Types.ObjectId(),
@@ -186,6 +187,7 @@ export const posts = [
       [userIds[7], "one more random comment"],
       [userIds[4], "I lied, one more random comment"],
     ],
+    displayTag: 0,
   },
   {
     _id: new mongoose.Types.ObjectId(),
@@ -210,6 +212,7 @@ export const posts = [
       [userIds[3], "I lied again, one more random comment"],
       [userIds[3], "I lied again, one more random comment"],
     ],
+    displayTag: 0,
   },
   {
     _id: new mongoose.Types.ObjectId(),
@@ -235,6 +238,7 @@ export const posts = [
       "All I want to do is play video games",
       "I'm going to play video games",
     ],
+    displayTag: 0,
   },
   {
     _id: new mongoose.Types.ObjectId(),
@@ -260,6 +264,7 @@ export const posts = [
       [userIds[5], "I lied again, one more random comment"],
       [userIds[5], "I lied again, one more random comment"],
     ],
+    displayTag: 0,
   },
   {
     _id: new mongoose.Types.ObjectId(),
@@ -284,5 +289,6 @@ export const posts = [
       [userIds[3], "I lied again, one more random comment"],
       [userIds[3], "I lied again, one more random comment"],
     ],
+    displayTag: 0,
   },
 ];

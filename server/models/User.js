@@ -49,10 +49,6 @@ const userSchema = new mongoose.Schema(
             type: Array,
             default: [],
         },
-        contentDisplay: {
-            type: Number,
-            default: 0,
-        },
         profilePrivacy: {
             type: Boolean,
             default: false,
@@ -62,8 +58,12 @@ const userSchema = new mongoose.Schema(
             default: false,
         },
         displayTag: {
-            type: Number,
-            default: 0,
+            type: String,
+            default: "",
+        },
+        recentPostOrder: {
+            type: Boolean,
+            default: false,
         }
 },
     { timestamps: true }

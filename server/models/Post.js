@@ -59,8 +59,8 @@ const postSchema = mongoose.Schema(
             default: [],
         },
         displayTag: {
-            type: Number,
-            default: 0,
+            type: String,
+            default: "",
         }
     },
     { timestamps: true }

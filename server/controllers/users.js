@@ -204,11 +204,13 @@ export const changeSettings = async (req, res) => {
         console.log(user);
         console.log(req.body);
 
-        const { emailPrivacy, profilePrivacy } = req.body; //Grab profilePrivacy and emailPrivacy
+        const { emailPrivacy, profilePrivacy, recentPostOrder } = req.body; //Grab profilePrivacy and emailPrivacy
         console.log("Profile Privacy: " + profilePrivacy);
         console.log("Email Privacy: " + emailPrivacy);
+        console.log("Recent Post Order: " + recentPostOrder);
         user.profilePrivacy = profilePrivacy; //Update profilePrivacy
         user.emailPrivacy = emailPrivacy; //Update emailPrivacy
+        user.recentPostOrder = recentPostOrder; //Update recentPostOrder
 
         await user.save(); //Save user information
 

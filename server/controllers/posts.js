@@ -13,7 +13,7 @@ import User from "../models/User.js";
 /* Create/POST */
 export const createPost = async (req, res) => {
     try {
-        const { userId, description, picturePath, videoPath, pollData } = req.body;
+        const { userId, description, picturePath, videoPath, pollData, displayTag } = req.body;
         // console.log(userId);
         // console.log(description);
         // console.log(picturePath);
@@ -32,7 +32,7 @@ export const createPost = async (req, res) => {
             userPicturePath: user.picturePath,
             likes: {},
             comments: [],
-            displayTag: 0,
+            displayTag,
         });
         await newPost.save(); //Save new post
 
@@ -58,6 +58,30 @@ export const createPost = async (req, res) => {
         // console.log(newPost);
 
         const posts = await Post.find(); //Get all the posts to send back to the front end
+
+        //Delete all posts for users that are private using profilePrivacy = 1
+        for (let i = 0; i < posts.length; i++) {
+            const user = await User.findById(posts[i].userId);
+            if (user.profilePrivacy === true) {
+                posts.splice(i, 1);
+                i--;
+            }
+        }
+
+        //Reverse the array to show the most recent posts first
+        posts.reverse();
+
+        //Post Order
+        // if (user.recentPostOrder === true && user.displayTag !== "") {
+        //     for (let i = 0; i < posts.length; i++) {
+        //         if (posts[i].displayTag === user.displayTag) {
+        //             posts.unshift(posts.splice(i, 1)[0]);
+        //         }
+        //     }
+
+        // }
+
+
         res.status(201).json(posts); //Return the new post, sends back to front end
     } catch (err) {
         res.status(409).json({ message: err.message });
@@ -68,6 +92,7 @@ export const createPost = async (req, res) => {
 export const getFeedPosts = async (req, res) => {
     try {
         const posts = await Post.find(); //Get all posts
+        const { userId } = req.body; //Grab userId
 
         //Delete all posts for users that are private using profilePrivacy = 1
         for (let i = 0; i < posts.length; i++) {
@@ -77,6 +102,24 @@ export const getFeedPosts = async (req, res) => {
                 i--;
             }
         }
+
+        //Reverse the array to show the most recent posts first
+        posts.reverse();
+
+        //Post Order
+        // currentUser = await User.findById(userId);
+        // if (currentUser.recentPostOrder === true && currentUser.displayTag !== "") {
+        //     for (let i = 0; i < posts.length; i++) {
+        //         if (posts[i].displayTag === currentUser.displayTag) {
+        //             posts.unshift(posts.splice(i, 1)[0]);
+        //         }
+        //     }
+
+        // }
+        
+
+        
+
 
 
         res.status(200).json(posts); //Return all posts, sends back to front end
@@ -89,6 +132,11 @@ export const getUserPosts = async (req, res) => {
     try {
         const { userId } = req.params; //Grab userId
         const posts = await Post.find({ userId }); //Get all posts by userId
+
+        //Reverse the array to show the most recent posts first
+        posts.reverse();
+
+
         res.status(200).json(posts); //Return all user's posts, sends back to front end
     } catch (err) {
         res.status(404).json({ message: err.message });
@@ -97,8 +145,9 @@ export const getUserPosts = async (req, res) => {
 
 export const getPost = async (req, res) => {
     try {
-        const { id } = req.params; //Grab relevant post by id
-        const post = await Post.findById(id); //Get post by id
+        const { postId } = req.params; //Grab relevant post by id
+        const post = await Post.findById(postId); //Get post by id
+        console.log(post);
         res.status(200).json(post); //Return post, sends back to front end
     }
     catch (err) {

@@ -16,11 +16,21 @@ export const register = async (req, res) => {
             email,
             password,
             picturePath,
-            friends
+            friends,
+            displayTag
         } = req.body;
 
         const salt = await bcrypt.genSalt(10); //Used to encrypt password
         const passwordHash = await bcrypt.hash(password, salt);
+
+        let handledDisplayTag = displayTag;
+        if (handledDisplayTag === "Default") {
+            handledDisplayTag = "";
+        }
+
+        // if (displayTag === "Default") {
+        //     displayTag = "";
+        // }
 
         const newUser = new User({
             username,
@@ -29,7 +39,8 @@ export const register = async (req, res) => {
             email,
             password: passwordHash, //passwordHash is the encrypted password
             picturePath,
-            friends
+            friends,
+            displayTag: handledDisplayTag,
         });
         const savedUser = await newUser.save();
         res.status(201).json(savedUser); //json version of savedUser

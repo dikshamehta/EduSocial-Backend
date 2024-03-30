@@ -10,7 +10,7 @@ const router = express.Router();
 /* Read/GET */
 router.get("/", verifyToken, getFeedPosts); //Get the feed posts (e.g., localhost:5000/posts)
 router.get("/:userId", verifyToken, getUserPosts); //Get the user's posts by their ID (e.g., localhost:5000/posts/johndoe)
-router.get("/:id", verifyToken, getPost); //Get a post by its ID (e.g., localhost:5000/posts/123)
+router.get("/:userId/:postId", verifyToken, getPost); //Get a post by its ID (e.g., localhost:5000/posts/123)
 router.get("/:id/poll", verifyToken, getPollData); //Get poll data by its parents post's ID (e.g., localhost:5000/posts/123/poll
 
 /* Update/PATCH */

@@ -38,8 +38,6 @@ export const createPost = async (req, res) => {
 
         if (pollData) {
             const newPollData = JSON.parse(pollData);
-            console.log(newPollData);
-            console.log(newPollData.options);
 
             const newPoll = new Poll({
                 question: newPollData.question,
@@ -147,7 +145,6 @@ export const getPost = async (req, res) => {
     try {
         const { postId } = req.params; //Grab relevant post by id
         const post = await Post.findById(postId); //Get post by id
-        console.log(post);
         res.status(200).json(post); //Return post, sends back to front end
     }
     catch (err) {

@@ -28,6 +28,12 @@ export const pollSchema = new mongoose.Schema(
             default: 0,
             required: false,
         },
+        voters: [
+            {
+                type: String,
+                required: false,
+            }
+        ]
     },
     { timestamps: true }
 );

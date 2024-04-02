@@ -12,6 +12,7 @@ import { register } from "./controllers/auth.js";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 import postRoutes from "./routes/posts.js";
+import pollRoutes from "./routes/polls.js";
 import { createPost } from "./controllers/posts.js";
 import { createAd } from "./controllers/ad.js";
 import { verifyToken } from "./middleware/auth.js";
@@ -62,6 +63,7 @@ app.post("/ads", verifyToken, upload.single("picture"), createAd); //createAd is
 app.use("/auth", authRoutes); //e.g., localhost:5000/auth/login
 app.use("/user", userRoutes); //e.g., localhost:5000/user/friends (3 user routes)
 app.use("/posts", postRoutes); //e.g., localhost:5000/posts (4 post routes)
+app.use("/polls", pollRoutes); //e.g., localhost:5000/polls (2 poll routes)
 
 // app.put("user/:id/changeSettings", verifyToken, changeSettings); //Change user settings by their ID
 

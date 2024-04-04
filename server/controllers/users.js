@@ -219,3 +219,43 @@ export const changeSettings = async (req, res) => {
         res.status(404).json({ error: err });
     }
 }
+
+export const getNotifications = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id);
+        res.status(200).json(user.notifications);
+    } catch (err) {
+        res.status(404).json({ error: err });
+    }
+}
+
+export const sendNotification = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { message, link } = req.body;
+      console.log(req.params);
+      console.log(req.body);
+      const user = await User.findById(id);
+      user.notifications.push({ message: message, link: link });
+      await user.save();
+      res.status(200).json(user.notifications);
+    } catch (err) {
+      res.status(404).json({ error: err.message });
+    }
+}
+
+export const removeNotification = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { notificationId } = req.body;
+    const user = await User.findById(id);
+    user.notifications = user.notifications.filter(
+      (notification) => notification._id != notificationId
+    );
+    await user.save();
+    res.status(200).json(user.notifications);
+  } catch (err) {
+    res.status(404).json({ error: err.message });
+  }
+}

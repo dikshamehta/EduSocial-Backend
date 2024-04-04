@@ -14,10 +14,14 @@ import userRoutes from "./routes/users.js";
 import postRoutes from "./routes/posts.js";
 import pollRoutes from "./routes/polls.js";
 import searchRoutes from "./routes/search.js";
+import pageRoutes from "./routes/pages.js";
+import pagePostRoutes from "./routes/pagePosts.js";
 import { createPost } from "./controllers/posts.js";
 import { createAd } from "./controllers/ad.js";
 import { verifyToken } from "./middleware/auth.js";
-import { changeSettings } from "./controllers/users.js";
+import { createPage, updatePage } from "./controllers/pages.js";
+import { createPagePost } from "./controllers/pagePosts.js";
+
 
 
 
@@ -57,6 +61,9 @@ app.post("/auth/register", upload.single("picture"), register); //register is th
 //need upload and is why this is different from the other routes
 app.post("/posts", verifyToken, upload.single("file"), createPost); //createPost is the controller function
 //Calls the upload above to upload the media
+app.post("/page/create", upload.single("pagePictureFile"), createPage);
+app.post("/pagePost", verifyToken, upload.single("file"), createPagePost);
+app.post("/page/:pageId", verifyToken, upload.single("pagePictureFile"), updatePage);
 
 app.post("/ads", verifyToken, upload.single("picture"), createAd); //createAd is the controller function
 
@@ -66,6 +73,8 @@ app.use("/user", userRoutes); //e.g., localhost:5000/user/friends (3 user routes
 app.use("/posts", postRoutes); //e.g., localhost:5000/posts (4 post routes)
 app.use("/polls", pollRoutes); //e.g., localhost:5000/polls (2 poll routes)
 app.use("/search", searchRoutes);
+app.use("/page", pageRoutes); 
+app.use("/pagePost", pagePostRoutes); 
 
 // app.put("user/:id/changeSettings", verifyToken, changeSettings); //Change user settings by their ID
 

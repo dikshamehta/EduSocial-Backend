@@ -64,7 +64,11 @@ const userSchema = new mongoose.Schema(
         recentPostOrder: {
             type: Boolean,
             default: false,
-        }
+        },
+        notifications: {
+            type: Array,
+            default: [],
+        },
 },
     { timestamps: true }
 );

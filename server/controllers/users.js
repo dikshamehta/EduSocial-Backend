@@ -259,3 +259,13 @@ export const removeNotification = async (req, res) => {
     res.status(404).json({ error: err.message });
   }
 }
+
+export const getUserByEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+    const user = await User.findOne({ email: email });
+    res.status(200).json(Boolean(user));
+  } catch (err) {
+    res.status(404).json({ error: err.message });
+  }
+}

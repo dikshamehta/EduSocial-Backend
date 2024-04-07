@@ -1,5 +1,6 @@
 import Post from "../models/Post.js";
 import User from "../models/User.js";
+import Page from "../models/Page.js"
 
 export const search = async (req, res) => {
     const query = req.body.search_string;
@@ -20,6 +21,15 @@ export const search = async (req, res) => {
                             lastName: { $regex: query, $options: 'i' }
                         },
                         {
+                            $expr: {
+                                $regexMatch: {
+                                    input: { $concat: ["$firstName", " ", "$lastName"] },
+                                    regex: query,
+                                    options: "i"
+                                }
+                            }
+                        },
+                        {
                             email: { $regex: query, $options: 'i' }
                         }
                     ]
@@ -34,12 +44,44 @@ export const search = async (req, res) => {
                             lastName: { $regex: query, $options: 'i' }
                         },
                         {
+                            $expr: {
+                                $regexMatch: {
+                                    input: { $concat: ["$firstName", " ", "$lastName"] },
+                                    regex: query,
+                                    options: "i"
+                                }
+                            }
+                        },
+                        {
                             description: { $regex: query, $options: 'i' }
                         }
                     ]
             });
 
-        res.json({ users, posts });
+        const pages = await Page.find(
+            { $or:
+                    [
+                        {
+                            pageName: { $regex: query, $options: 'i' }
+                        },
+                        {
+                            pageDescription: { $regex: query, $options: 'i' }
+                        },
+                        {
+                            events: {
+                                $elemMatch: {
+                                    $or: [
+                                        { name: { $regex: query, $options: 'i' } },
+                                        { description: { $regex: query, $options: 'i' } }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+            });
+
+
+        res.json({ users, posts, pages });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

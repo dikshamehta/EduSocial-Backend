@@ -9,7 +9,6 @@ const router = express.Router(); //Allow express to identify these routers will 
 router.post("/login", login); //prefixed to auth already
 // router.get('/google-login',googleLogin)
 router.post("/google-login", googleOAuthLogin); //OAuth
-
 router.post("/captcha", verifyCaptcha);
 
 export default router;

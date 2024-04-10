@@ -11,7 +11,8 @@ import {
     unblockUser,
     changeSettings,
     getNotifications,
-    sendNotification
+    sendNotification,
+    joinPage
 } from "../controllers/users.js"; //Importing the functions from the user controller
 import { verifyToken } from "../middleware/auth.js";
 
@@ -33,5 +34,6 @@ router.put("/:id/changeSettings", verifyToken, changeSettings); //Change user se
 router.patch("/:id", verifyToken, sendNotification);
 router.patch("/:id/:userToBlockId/block", verifyToken, blockUser); //Block a user by their ID
 router.put("/:id/:userToUnblockId/unblock", verifyToken, unblockUser); //Unblock a user by their ID
+router.post("/:id/joinPage/:pageId", verifyToken, joinPage);
 
 export default router;

@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Page from "../models/Page.js";
 
 //This is where the logic for the CRUD operations will go
 
@@ -378,4 +379,28 @@ export const removeNotification = async (req, res) => {
   } catch (err) {
     res.status(404).json({ error: err.message });
   }
+}
+
+export const joinPage = async (req, res) => {
+    try {
+        const { id, pageId } = req.params;
+        console.log(id, pageId);
+        const user = await User.findById(id);
+        const page = await Page.findById(pageId);
+        console.log(user.joinedPages, page.pageMembers);
+
+        if (!page) throw new Error("Page does not exist");
+
+        if (!user.joinedPages.includes(pageId)) {
+            user.joinedPages.push(pageId);
+            await user.save();
+        }
+
+        if (!page.pageMembers.includes(id)) {
+            page.pageMembers.push(id);
+            await page.save();
+        }
+    } catch (err) {
+        res.status(404).json({ error: err.message });
+    }
 }

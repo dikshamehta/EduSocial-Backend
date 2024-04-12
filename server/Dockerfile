@@ -1,5 +1,4 @@
 #  Dockerfile for Node Express Backend
-
 FROM node:20.11.0-alpine
 
 # Create App Directory
@@ -17,4 +16,4 @@ COPY . .
 # Exports
 EXPOSE 5000
 
-CMD ["npm","start"]
+CMD ["node","index.js"]

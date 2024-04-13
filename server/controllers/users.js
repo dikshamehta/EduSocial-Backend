@@ -387,14 +387,12 @@ export const removeNotification = async (req, res) => {
 export const getUserByEmail = async (req, res) => {
   try {
     const { email } = req.params;
-    console.log(email);
     const user = await User.findOne({ email: email });
-    console.log(email);
     let token = jwt.sign({ email }, process.env.JWT_SECRET, {
       expiresIn: "30m",
     });
     sendResetEmail(email, token);
-    res.status(200).json(token);
+    res.status(200);
   } catch (err) {
     console.log(err);
     res.status(404).json({ error: err.message });
@@ -417,6 +415,7 @@ const sendResetEmail = async (email, token) => {
     to: email,
     subject: "Password Reset",
     html: `
+            <h1>EduSocial Password Reset</h1>
             <p>Please click the link below to reset your password:</p>
             <a href="${process.env.CLIENT_URL}/forgot-password/${token}">Reset Password</a>
         `,

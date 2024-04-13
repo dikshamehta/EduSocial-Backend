@@ -5,7 +5,7 @@ FROM node:slim
 ENV NODE_ENV development
 
 # Setting up the work directory
-WORKDIR /express-docker
+WORKDIR /server
 
 # Copying all the files in our project
 COPY . .

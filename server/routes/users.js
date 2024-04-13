@@ -12,6 +12,8 @@ import {
     changeSettings,
     getNotifications,
     sendNotification,
+    getUserByEmail,
+    resetPassword,
     joinPage
 } from "../controllers/users.js"; //Importing the functions from the user controller
 import { verifyToken } from "../middleware/auth.js";
@@ -25,6 +27,7 @@ router.get("/:id/friends", verifyToken, getUserFriends); //Get the user's friend
 router.get("/:id/friendRequests", verifyToken, getUserFriendRequests); //Get the user's friend requests by their ID (e.g., localhost:5000/user/johndoe/friendRequests)
 router.get("/:id/blockedUsers", verifyToken, getBlockedUsers); //Get the user's blocked users by their ID (e.g., localhost:5000/user/johndoe/blockedUsers)
 router.get("/:id/notifications", verifyToken, getNotifications);
+router.get("/email/:email", getUserByEmail);
 
 /* Update/PATCH */
 router.patch("/:id/:friendId", verifyToken, addRemoveFriend); //Add or remove a friend by their ID (e.g., localhost:5000/user/johndoe/jake)
@@ -35,5 +38,7 @@ router.patch("/:id", verifyToken, sendNotification);
 router.patch("/:id/:userToBlockId/block", verifyToken, blockUser); //Block a user by their ID
 router.put("/:id/:userToUnblockId/unblock", verifyToken, unblockUser); //Unblock a user by their ID
 router.post("/:id/joinPage/:pageId", verifyToken, joinPage);
+
+router.post("/resetPassword", resetPassword);
 
 export default router;

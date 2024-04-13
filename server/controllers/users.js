@@ -1,4 +1,7 @@
 import User from "../models/User.js";
+import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+import bcrypt from "bcrypt";
 import Page from "../models/Page.js";
 
 //This is where the logic for the CRUD operations will go
@@ -380,6 +383,63 @@ export const removeNotification = async (req, res) => {
     res.status(404).json({ error: err.message });
   }
 }
+
+export const getUserByEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+    console.log(email);
+    const user = await User.findOne({ email: email });
+    console.log(email);
+    let token = jwt.sign({ email }, process.env.JWT_SECRET, {
+      expiresIn: "30m",
+    });
+    sendResetEmail(email, token);
+    res.status(200).json(token);
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({ error: err.message });
+  }
+}
+
+const sendResetEmail = async (email, token) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: "Password Reset",
+    html: `
+            <p>Please click the link below to reset your password:</p>
+            <a href="${process.env.CLIENT_URL}/forgot-password/${token}">Reset Password</a>
+        `,
+  };
+
+  return transporter.sendMail(mailOptions);
+};
+
+export const resetPassword = async (req, res) => {
+    try {
+        const { password, token } = req.body;
+        console.log(password, token);
+        const salt = await bcrypt.genSalt(10);
+        const passwordHash = await bcrypt.hash(password, salt);
+        const { email } = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findOne({ email: email });
+        user.password = passwordHash;
+        await user.save();
+        res.status(200);
+    } catch (err) {
+        res.status(404).json({ error: err.message });
+    }
+};
 
 export const joinPage = async (req, res) => {
     try {

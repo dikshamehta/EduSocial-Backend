@@ -8,19 +8,19 @@ import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 import mongoose from "mongoose";
-import { register } from "../controllers/auth.js";
-import authRoutes from "../routes/auth.js";
-import userRoutes from "../routes/users.js";
-import postRoutes from "../routes/posts.js";
-import pollRoutes from "../routes/polls.js";
-import searchRoutes from "../routes/search.js";
-import pageRoutes from "../routes/pages.js";
-import pagePostRoutes from "../routes/pagePosts.js";
-import { createPost } from "../controllers/posts.js";
-import { createAd } from "../controllers/ad.js";
-import { verifyToken } from "../middleware/auth.js";
-import { createPage, updatePage } from "../controllers/pages.js";
-import { createPagePost } from "../controllers/pagePosts.js";
+import { register } from "./controllers/auth.js";
+import authRoutes from "./routes/auth.js";
+import userRoutes from "./routes/users.js";
+import postRoutes from "./routes/posts.js";
+import pollRoutes from "./routes/polls.js";
+import searchRoutes from "./routes/search.js";
+import pageRoutes from "./routes/pages.js";
+import pagePostRoutes from "./routes/pagePosts.js";
+import { createPost } from "./controllers/posts.js";
+import { createAd } from "./controllers/ad.js";
+import { verifyToken } from "./middleware/auth.js";
+import { createPage, updatePage } from "./controllers/pages.js";
+import { createPagePost } from "./controllers/pagePosts.js";
 
 
 

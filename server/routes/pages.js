@@ -18,6 +18,9 @@ router.get("/:pageId/members", getMembers);
 // Delete a page
 router.delete("/:pageId", verifyToken, deletePage);
 
+// Update a page
+router.patch("/:pageId", verifyToken, updatePage);
+
 // Add event
 router.patch("/:pageId", verifyToken, addEvent);
 

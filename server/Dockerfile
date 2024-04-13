@@ -1,20 +1,20 @@
-#  Dockerfile for Node Express Backend
+# Fetching the minified node image on apline linux
+FROM node:slim
 
-FROM node:20.11.0-alpine
+# Declaring env
+ENV NODE_ENV development
 
-# Create App Directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+# Setting up the work directory
+WORKDIR /server
 
-# Install Dependencies
-COPY package*.json ./
-
-RUN npm install --silent
-
-# Copy app source code
+# Copying all the files in our project
 COPY . .
 
-# Exports
-EXPOSE 5000
+# Installing dependencies
+RUN npm install
 
-CMD ["npm","start"]
+# Starting our application
+CMD [ "node", "index.js" ]
+
+# Exposing server port
+EXPOSE 5000

@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
+import Page from "../models/Page.js";
 
 //This is where the logic for the CRUD operations will go
 
@@ -55,6 +56,26 @@ export const getUserFriendRequests = async (req, res) => {
             }
         );
         res.status(200).json(formattedFriendRequests); //Return friend requests, sends back to front end
+    } catch (err) {
+        res.status(404).json({ error: err.message });
+    }
+};
+
+export const getBlockedUsers = async (req, res) => {
+    try {
+        const { id } = req.params; //Grab id
+        const user = await User.findById(id); //Get user by id
+
+        const blockedUsers = await Promise.all( //Makes multiple API calls to the database
+            user.blockedUsers.map((id) => User.findById(id)) //Get all blocked users by their id
+        );
+        const formattedBlockedUsers = blockedUsers.map(
+            ({ _id, username, firstName, lastName, picturePath }) => {
+                return { _id, username, firstName, lastName, picturePath };
+            }
+        );
+
+        res.status(200).json(formattedBlockedUsers); //Return blocked users, sends back to front end
     } catch (err) {
         res.status(404).json({ error: err.message });
     }
@@ -200,6 +221,106 @@ export const declineFriendRequest = async (req, res) => {
     }
 }
 
+export const blockUser = async (req, res) => {
+    try {
+        const { id, userToBlockId } = req.params; //Grab id and userToBlockId
+        const user = await User.findById(id); //Get current user information by id
+
+        //Find the user to block by username - userToBlockId is the username
+        const userToBlockUsername = userToBlockId;
+        const userToBlock = await User.findOne({ username: userToBlockUsername });
+        //Retrieve their id
+        let actualUserToBlockId = userToBlock._id;
+
+        if (id === actualUserToBlockId) { //If user is trying to block themselves
+            return; //Return error
+        }
+        if (!user.blockedUsers.includes(actualUserToBlockId)) { //If user is not already blocked
+            user.blockedUsers.push(actualUserToBlockId); //Block user
+        }
+        if (user.friends.includes(actualUserToBlockId)) { //If user is friends with user to block
+            // user.friends = user.friends.filter((id) => id !== actualUserToBlockId); //Filter out friend
+            // userToBlock.friends = userToBlock.friends.filter((id) => id !== id); //Filter out user from friend's friends list
+            user.friends.remove(actualUserToBlockId); //Remove friend
+            userToBlock.friends.remove(id); //Remove user from friend's friends list
+        }
+        if (user.friendRequests.includes(actualUserToBlockId)) { //If user has friend request from user to block
+            // user.friendRequests = user.friendRequests.filter((id) => id !== actualUserToBlockId); //Filter out friend request
+            user.friendRequests.remove(actualUserToBlockId); //Remove friend request
+
+        }
+
+        await user.save(); //Save user information
+        await userToBlock.save(); //Save userToBlock information
+
+        const blockedUsers = await Promise.all( //Makes multiple API calls to the database
+            user.blockedUsers.map((id) => User.findById(id)) //Get all blocked users by their id
+        );
+        const formattedBlockedUsers = blockedUsers.map(
+            ({ _id, username, firstName, lastName, picturePath }) => {
+                return { _id, username, firstName, lastName, picturePath };
+            }
+        );
+
+        res.status(200).json(formattedBlockedUsers); //Return blocked users, sends back to front end
+    } catch (err) {
+        res.status(404).json({ error: err });
+    }
+};
+
+export const unblockUser = async (req, res) => {
+    try {
+        const { id, userToUnblockId } = req.params; //Grab id and userToUnblockId
+        const user = await User.findById(id); //Get current user information by id
+        const userToUnblock = await User.findById(userToUnblockId);
+
+        console.log(user);
+        console.log(userToUnblock);
+
+
+        // const userToUnblockUsername = userToUnblockId;
+        // let actualUserToUnblockId = userToUnblock._id;
+
+
+
+        // const userToUnblock = await User.findById(userToUnblockId);
+
+        if (id === userToUnblockId) { //If user is trying to unblock themselves
+            return; //Return error
+        }
+
+        //Look for the user to unblock by their id
+        if (user.blockedUsers.includes(userToUnblockId)) { //If user is blocked
+            // user.blockedUsers = user.blockedUsers.filter((id) => id !== userToUnblockId); //Filter out user
+            user.blockedUsers.remove(userToUnblockId); //Unblock user
+        }
+
+        // if (user.blockedUsers.includes(userToUnblockId)) { //If user is blocked
+        //     user.blockedUsers = user.blockedUsers.filter((id) => id !== userToUnblockId); //Unblock user
+
+        // }
+
+        user.blockedUsers = user.blockedUsers.filter((id) => id !== userToUnblockId); //Unblock user
+
+        await user.save(); //Save user 
+        
+        const blockedUsers = await Promise.all( //Makes multiple API calls to the database
+            user.blockedUsers.map((id) => User.findById(id)) //Get all blocked users by their id
+        );
+        const formattedBlockedUsers = blockedUsers.map(
+            ({ _id, username, firstName, lastName, picturePath }) => {
+                return { _id, username, firstName, lastName, picturePath };
+            }
+        );
+
+        res.status(200).json(formattedBlockedUsers); //Return blocked users, sends back to front end
+
+
+    } catch (err) {
+        res.status(404).json({ error: err });
+    }
+};
+
 export const changeSettings = async (req, res) => {
     try {
         const { id } = req.params; //Grab id
@@ -319,3 +440,27 @@ export const resetPassword = async (req, res) => {
         res.status(404).json({ error: err.message });
     }
 };
+
+export const joinPage = async (req, res) => {
+    try {
+        const { id, pageId } = req.params;
+        console.log(id, pageId);
+        const user = await User.findById(id);
+        const page = await Page.findById(pageId);
+        console.log(user.joinedPages, page.pageMembers);
+
+        if (!page) throw new Error("Page does not exist");
+
+        if (!user.joinedPages.includes(pageId)) {
+            user.joinedPages.push(pageId);
+            await user.save();
+        }
+
+        if (!page.pageMembers.includes(id)) {
+            page.pageMembers.push(id);
+            await page.save();
+        }
+    } catch (err) {
+        res.status(404).json({ error: err.message });
+    }
+}

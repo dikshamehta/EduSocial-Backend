@@ -41,6 +41,10 @@ const userSchema = new mongoose.Schema(
             type: Array,
             default: [],
         },
+        joinedPages: {
+            type: Array,
+            default: [],
+        },
         friendRequests: {
             type: Array,
             default: [],
